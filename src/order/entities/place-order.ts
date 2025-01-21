@@ -6,3 +6,10 @@ export class PlaceOrder {
     nuserid: number;
   }
   
+
+// DTO file (generate-bill.dto.ts)
+export class GenerateBillDto {
+  nBillId: number;
+  nTaxPer: number;
+  nDiscount: number;
+}

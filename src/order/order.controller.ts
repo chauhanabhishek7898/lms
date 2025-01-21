@@ -2,11 +2,11 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { PlaceOrder } from './entities/place-order';
+import { GenerateBillDto, PlaceOrder } from './entities/place-order';
 
 @Controller('order')
 export class OrderController {
-  constructor(private readonly orderService: OrderService) {}
+  constructor(private readonly orderService: OrderService) { }
 
   @Post('placeOrder')
   async placeOrder(@Body() orderData: PlaceOrder): Promise<any> {
@@ -15,7 +15,12 @@ export class OrderController {
     return data.recordset;
   }
 
-
+  @Post('generate')
+  async generateBill(@Body() billData: GenerateBillDto): Promise<any> {
+    const data = await this.orderService.generateBill(billData);
+    console.log('Bill generated:', data);
+    return data;
+  }
 
   @Post()
   create(@Body() createOrderDto: CreateOrderDto) {

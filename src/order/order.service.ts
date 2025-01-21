@@ -4,7 +4,7 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 
 import * as sql from 'mssql';
 import { sqlConnection } from 'src/env';
-import { PlaceOrder } from './entities/place-order';
+import { GenerateBillDto, PlaceOrder } from './entities/place-order';
 
 @Injectable()
 export class OrderService {
@@ -50,6 +50,38 @@ private pool: sql.ConnectionPool;
       }
     }
 
+
+    async generateBill(billData: GenerateBillDto): Promise<any> {
+      console.log('Generating bill with data:', billData);
+  
+      try {
+        // Connect to SQL Server
+        const pool = await sql.connect(this.sqlConnection);
+        console.log('Connected to SQL Server');
+  
+        const request = new sql.Request(pool);
+  
+        // Input parameters for the stored procedure
+        request.input('nBillId', sql.Int, billData.nBillId);
+        request.input('nTaxPer', sql.Numeric(18, 2), billData.nTaxPer);
+        request.input('nDiscount', sql.Numeric(18, 2), billData.nDiscount);
+  
+        // Execute the stored procedure
+        const result = await request.execute('GenerateBill');
+  
+        // Close the connection
+        await pool.close();
+        console.log('Disconnected from SQL Server');
+  
+        console.log('Generated Bill:', result.recordset);
+        return result.recordset;
+      } catch (error) {
+        console.error('Failed to execute stored procedure:', error);
+        throw new Error('Failed to execute stored procedure');
+      }
+    }
+  
+  
 
 
   create(createOrderDto: CreateOrderDto) {
