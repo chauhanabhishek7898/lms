@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { GenerateBillDto, PlaceOrder } from './entities/place-order';
+import { GenerateBillDto, PlaceOrder, UpdateKOTStatusDto } from './entities/place-order';
 
 @Controller('order')
 export class OrderController {
@@ -21,6 +21,34 @@ export class OrderController {
     console.log('Bill generated:', data);
     return data;
   }
+
+
+  @Get('PrintKot/:nKotNumber')
+  async PrintKot(
+    @Param('nUserId') nKotNumber: number,
+  ): Promise<any> {
+    const data = await this.orderService.PrintKot(nKotNumber);
+    console.log("data.recordset", data.recordset);
+    return data;
+  }
+
+  
+   @Get('DM_sp_Bill_Select/:nTableNumber')
+  async DM_sp_Bill_Select(
+    @Param('nTableNumber') nTableNumber: number,
+  ): Promise<any> {
+    const data = await this.orderService.DM_sp_Bill_Select(nTableNumber);
+    console.log("data.recordset", data.recordset);
+    return data.recordset;
+  }
+
+  @Post('UpdateKOTStatus')
+  async updateKOTStatus(@Body() kotData: UpdateKOTStatusDto): Promise<any> {
+    const data = await this.orderService.updateKOTStatus(kotData);
+    console.log('update KOT Status:', data);
+    return data;
+  }
+
 
   @Post()
   create(@Body() createOrderDto: CreateOrderDto) {

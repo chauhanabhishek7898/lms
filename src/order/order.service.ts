@@ -4,7 +4,7 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 
 import * as sql from 'mssql';
 import { sqlConnection } from 'src/env';
-import { GenerateBillDto, PlaceOrder } from './entities/place-order';
+import { GenerateBillDto, PlaceOrder, UpdateKOTStatusDto } from './entities/place-order';
 
 @Injectable()
 export class OrderService {
@@ -84,6 +84,87 @@ private pool: sql.ConnectionPool;
   
 
 
+    async PrintKot(nKotNumber): Promise<any> {
+        try {
+          await sql.connect(this.sqlConnection);
+          console.log('Connected to SQL Server');
+    
+          const request = new sql.Request();
+          request.input('nKotNumber', sql.Numeric(18, 0), nKotNumber);
+          const recordSet = await request.execute('PrintKot');
+    
+          //   console.log('Executing proc...', recordSet);
+          try {
+            await this.pool.close();
+            console.log('Disconnected from SQL Server');
+          } catch (error) {
+            console.error('Failed to disconnect from SQL Server:', error);
+          }
+          console.log("recordSet",  recordSet);
+          
+          return recordSet;
+        } catch (error) {
+          console.error('Failed to connect to SQL Server:', error);
+          throw new Error('Failed to connect to SQL Server');
+        }
+      }
+    
+
+      async DM_sp_Bill_Select(nTableNumber): Promise<any> {
+        try {
+          await sql.connect(this.sqlConnection);
+          console.log('Connected to SQL Server');
+    
+          const request = new sql.Request();
+          request.input('nTableNumber', sql.Numeric(18, 0), nTableNumber);
+          const recordSet = await request.execute('DM_sp_Bill_Select');
+    
+          //   console.log('Executing proc...', recordSet);
+          try {
+            await this.pool.close();
+            console.log('Disconnected from SQL Server');
+          } catch (error) {
+            console.error('Failed to disconnect from SQL Server:', error);
+          }
+          console.log("recordSet",  recordSet);
+          
+          return recordSet;
+        } catch (error) {
+          console.error('Failed to connect to SQL Server:', error);
+          throw new Error('Failed to connect to SQL Server');
+        }
+      }
+    
+      
+
+      async updateKOTStatus(updateKOTStatusDto: UpdateKOTStatusDto): Promise<any> {
+        console.log('Updating KOT status with data:', updateKOTStatusDto);
+        try {
+          await sql.connect(this.sqlConnection);
+          console.log('Connected to SQL Server');
+    
+          const request = new sql.Request();
+          request.input('nKotNumber', sql.Int, updateKOTStatusDto.nKotNumber);
+          request.input('vKotStatus', sql.NVarChar(50), updateKOTStatusDto.vKotStatus);
+    
+          const recordSet = await request.execute('UpdateKOTStatus');
+    
+          console.log('RecordSet:', recordSet);
+          return recordSet;
+        } catch (error) {
+          console.error('Failed to execute stored procedure:', error);
+          throw new Error('Failed to execute stored procedure');
+        } finally {
+          try {
+            await sql.close();
+            console.log('Disconnected from SQL Server');
+          } catch (error) {
+            console.error('Failed to disconnect from SQL Server:', error);
+          }
+        }
+      }
+
+      
   create(createOrderDto: CreateOrderDto) {
     return 'This action adds a new order';
   }

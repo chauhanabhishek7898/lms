@@ -13,3 +13,8 @@ export class GenerateBillDto {
   nTaxPer: number;
   nDiscount: number;
 }
+
+export class UpdateKOTStatusDto {
+  nKotNumber: number;
+  vKotStatus: string; // 'pending', 'in_progress', or 'served'
+}
