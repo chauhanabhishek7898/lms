@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { GenerateBillDto, PlaceOrder, UpdateKOTStatusDto } from './entities/place-order';
+import { GenerateBillDto, PaidBillDto, PlaceOrder, UpdateKOTStatusDto } from './entities/place-order';
 
 @Controller('order')
 export class OrderController {
@@ -32,8 +32,8 @@ export class OrderController {
     return data;
   }
 
-  
-   @Get('DM_sp_Bill_Select/:nTableNumber')
+
+  @Get('DM_sp_Bill_Select/:nTableNumber')
   async DM_sp_Bill_Select(
     @Param('nTableNumber') nTableNumber: number,
   ): Promise<any> {
@@ -47,6 +47,26 @@ export class OrderController {
     const data = await this.orderService.updateKOTStatus(kotData);
     console.log('update KOT Status:', data);
     return data;
+  }
+
+  @Post('settle_save')
+  async recordPayment(@Body() paymentData: PaidBillDto): Promise<any> {
+    try {
+      const result = await this.orderService.recordPayment(paymentData);
+      return {
+        success: true,
+        message: 'Payment recorded successfully.',
+        result,
+      };
+    } catch (error) {
+      throw new HttpException(
+        {
+          success: false,
+          message: error.message || 'Failed to record payment.',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
 
