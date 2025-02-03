@@ -40,6 +40,15 @@ export class OrderController {
     const data = await this.orderService.DM_sp_Bill_Select(nTableNumber);
     console.log("data.recordset", data.recordset);
     return data.recordset;
+  } 
+  
+  @Get('DM_sp_Print_Bill/:nTableNumber')
+  async DM_sp_Print_Bill(
+    @Param('nTableNumber') nTableNumber: number,
+  ): Promise<any> {
+    const data = await this.orderService.DM_sp_Print_Bill(nTableNumber);
+    console.log("data.recordsets", data.recordsets);
+    return data.recordsets;
   }
 
   @Post('UpdateKOTStatus')

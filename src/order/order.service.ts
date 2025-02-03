@@ -135,6 +135,31 @@ export class OrderService {
     }
   }
 
+async DM_sp_Print_Bill(nTableNumber): Promise<any> {
+    try {
+      await sql.connect(this.sqlConnection);
+      console.log('Connected to SQL Server');
+
+      const request = new sql.Request();
+      request.input('nTableNumber', sql.Numeric(18, 0), nTableNumber);
+      const recordSet = await request.execute('DM_sp_Print_Bill');
+
+      //   console.log('Executing proc...', recordSet);
+      try {
+        await this.pool.close();
+        console.log('Disconnected from SQL Server');
+      } catch (error) {
+        console.error('Failed to disconnect from SQL Server:', error);
+      }
+      console.log("recordSet", recordSet);
+
+      return recordSet;
+    } catch (error) {
+      console.error('Failed to connect to SQL Server:', error);
+      throw new Error('Failed to connect to SQL Server');
+    }
+  }
+
 
 
   async updateKOTStatus(updateKOTStatusDto: UpdateKOTStatusDto): Promise<any> {
