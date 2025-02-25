@@ -3,7 +3,7 @@ import { CreateMasterDto } from './dto/create-master.dto';
 import { UpdateMasterDto } from './dto/update-master.dto';
 
 import * as sql from 'mssql';
-import { sqlConnection } from 'src/env';
+import { sqlConnection } from '../env';
 
 @Injectable()
 export class MasterService {

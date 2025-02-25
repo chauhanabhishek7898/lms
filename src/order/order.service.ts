@@ -3,7 +3,7 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 
 import * as sql from 'mssql';
-import { sqlConnection } from 'src/env';
+import { sqlConnection } from '../env';
 import { GenerateBillDto, PaidBillDto, PlaceOrder, UpdateKOTStatusDto } from './entities/place-order';
 
 @Injectable()
