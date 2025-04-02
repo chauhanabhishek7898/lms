@@ -20,3 +20,13 @@ export class TableDto {
     btActive?: boolean = true; // Default active
     vCatPrefix: string;
   }
+
+  export class ItemDto {
+    nItemId?: number; // Required only for update
+    vItemCode: string;
+    vItemName: string;
+    nPrice: number;
+    nTax: number;
+    nCategoryId: number;
+    bActive: boolean;
+  }

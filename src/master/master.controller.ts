@@ -3,7 +3,7 @@ import { MasterService } from './master.service';
 import { CreateMasterDto } from './dto/create-master.dto';
 import { UpdateMasterDto } from './dto/update-master.dto';
 import { UserDto } from './dto/user.dto';
-import { CategoryDto, RoleDto, TableDto } from './entities/master.entity';
+import { CategoryDto, ItemDto, RoleDto, TableDto } from './entities/master.entity';
 
 @Controller('master')
 export class MasterController {
@@ -26,16 +26,6 @@ export class MasterController {
     @Param('vDeviceId') vDeviceId: string,
   ): Promise<any> {
     return await this.masterService.DM_sp_GetUserDetailsUsingUNandPW(vUserName, vPassword, vDeviceId);
-  }
-
-
-
-
-  @Get('DM_sp_ItemMaster_SelectAll_Active')
-  async DM_sp_ItemMaster_SelectAll_Active(): Promise<any> {
-    const data = await this.masterService.DM_sp_ItemMaster_SelectAll_Active();
-    console.log("data", data);
-    return data;
   }
 
   
@@ -130,6 +120,28 @@ export class MasterController {
     return data;
   }
 
+
+
+  @Get('DM_sp_ItemMaster_SelectAll_Active')
+  async DM_sp_ItemMaster_SelectAll_Active(): Promise<any> {
+    const data = await this.masterService.DM_sp_ItemMaster_SelectAll_Active();
+    console.log("data", data);
+    return data;
+  }
+
+  @Post('DM_sp_ItemMaster_Insert')
+  async DM_sp_ItemMaster_Insert(@Body() itemData: ItemDto): Promise<any> {
+    const data = await this.masterService.DM_sp_ItemMaster_Insert(itemData);
+    console.log('Item inserted:', data);
+    return data;
+  }
+
+  @Put('DM_sp_ItemMaster_Update')
+  async DM_sp_ItemMaster_Update(@Body() itemData: ItemDto): Promise<any> {
+    const data = await this.masterService.DM_sp_ItemMaster_Update(itemData);
+    console.log('Item updated:', data);
+    return data;
+  }
 
 
   @Post()
