@@ -4,6 +4,8 @@ import { UpdateMasterDto } from './dto/update-master.dto';
 
 import * as sql from 'mssql';
 import { sqlConnection } from '../env';
+import { UserDto } from './dto/user.dto';
+import { CategoryDto, RoleDto, TableDto } from './entities/master.entity';
 
 @Injectable()
 export class MasterService {
@@ -74,29 +76,7 @@ export class MasterService {
   }
 
 
-  async DM_sp_CategoryMaster_SelectAll_Active(): Promise<any> {
-    try {
-      await sql.connect(this.sqlConnection);
-      console.log('Connected to SQL Server');
 
-      const request = new sql.Request();
-      const recordSet = await request.execute('DM_sp_CategoryMaster_SelectAll_Active');
-
-      //   console.log('Executing proc...', recordSet);
-      try {
-        await this.pool.close();
-        console.log('Disconnected from SQL Server');
-      } catch (error) {
-        console.error('Failed to disconnect from SQL Server:', error);
-      }
-      console.log("recordSet", recordSet);
-
-      return recordSet;
-    } catch (error) {
-      console.error('Failed to connect to SQL Server:', error);
-      throw new Error('Failed to connect to SQL Server');
-    }
-  }
 
   async DM_sp_ItemMaster_SelectAll_Active(): Promise<any> {
     try {
@@ -125,6 +105,86 @@ export class MasterService {
   }
   
 
+  
+
+  async UserMaster_SelectAll_Active(): Promise<any> {
+    try {
+      await sql.connect(this.sqlConnection);
+      console.log('Connected to SQL Server');
+
+      const request = new sql.Request();
+      const recordSet = await request.execute('UserMaster_SelectAll_Active');
+
+      //   console.log('Executing proc...', recordSet);
+      try {
+        await this.pool.close();
+        console.log('Disconnected from SQL Server');
+      } catch (error) {
+        console.error('Failed to disconnect from SQL Server:', error);
+      }
+      console.log("recordSet", recordSet);
+
+      return recordSet;
+    } catch (error) {
+      console.error('Failed to connect to SQL Server:', error);
+      throw new Error('Failed to connect to SQL Server');
+    }
+  }
+
+  async insertUser(user: UserDto): Promise<any> {
+    console.log('Insert User Data:', user);
+    try {
+      await sql.connect(this.sqlConnection);
+      console.log('Connected to SQL Server');
+
+      const request = new sql.Request();
+      request.input('vFullName', sql.VarChar(50), user.vFullName);
+      request.input('vUserName', sql.VarChar(50), user.vUserName);
+      request.input('vPassword', sql.VarChar(50), user.vPassword);
+      request.input('vMobileNo', sql.VarChar(50), user.vMobileNo);
+      request.input('vEmailId', sql.VarChar(50), user.vEmailId);
+      request.input('nRoleId', sql.Int, user.nRoleId);
+
+      const result = await request.execute('DM_sp_UserMaster_Insert');
+
+      await sql.close();
+      console.log('Disconnected from SQL Server');
+      return result;
+    } catch (error) {
+      console.error('Failed to execute stored procedure:', error);
+      throw new Error('Failed to execute stored procedure');
+    }
+  }
+
+  async updateUser(user: UserDto): Promise<any> {
+    console.log('Update User Data:', user);
+    try {
+      await sql.connect(this.sqlConnection);
+      console.log('Connected to SQL Server');
+
+      const request = new sql.Request();
+      request.input('nUserId', sql.Int, user.nUserId);
+      request.input('vFullName', sql.VarChar(50), user.vFullName);
+      request.input('vUserName', sql.VarChar(50), user.vUserName);
+      request.input('vPassword', sql.VarChar(50), user.vPassword);
+      request.input('vMobileNo', sql.VarChar(50), user.vMobileNo);
+      request.input('vEmailId', sql.VarChar(50), user.vEmailId);
+      request.input('nRoleId', sql.Int, user.nRoleId);
+      request.input('btActive', sql.Bit, user.btActive);
+      request.input('vDeviceId', sql.VarChar(50), user.vDeviceId);
+
+      const result = await request.execute('DM_sp_UserMaster_Update');
+
+      await sql.close();
+      console.log('Disconnected from SQL Server');
+      return result;
+    } catch (error) {
+      console.error('Failed to execute stored procedure:', error);
+      throw new Error('Failed to execute stored procedure');
+    }
+  }
+
+
   async DM_sp_TableMaster_SelectAll_Active(): Promise<any> {
     try {
       await sql.connect(this.sqlConnection);
@@ -149,13 +209,61 @@ export class MasterService {
     }
   }
 
-  async DS_sp_UserMaster_SelectAllActive(): Promise<any> {
+
+  async insertTable(table: TableDto): Promise<any> {
+    console.log('Insert Table Data:', table);
     try {
       await sql.connect(this.sqlConnection);
       console.log('Connected to SQL Server');
 
       const request = new sql.Request();
-      const recordSet = await request.execute('DS_sp_UserMaster_SelectAllActive');
+      request.input('vTableDesc', sql.VarChar(50), table.vTableDesc);
+      request.input('vTableCurrStatus', sql.VarChar(50), table.vTableCurrStatus);
+      request.input('bStatus', sql.Bit, table.bStatus);
+
+      const result = await request.execute('DM_sp_TableMaster_Insert');
+
+      await sql.close();
+      console.log('Disconnected from SQL Server');
+      return result;
+    } catch (error) {
+      console.error('Failed to execute stored procedure:', error);
+      throw new Error('Failed to execute stored procedure');
+    }
+  }
+
+  async updateTable(table: TableDto): Promise<any> {
+    console.log('Update Table Data:', table);
+    try {
+      await sql.connect(this.sqlConnection);
+      console.log('Connected to SQL Server');
+
+      const request = new sql.Request();
+      request.input('nTableId', sql.Int, table.nTableId);
+      request.input('vTableDesc', sql.VarChar(50), table.vTableDesc);
+      request.input('vTableCurrStatus', sql.VarChar(50), table.vTableCurrStatus);
+      request.input('bStatus', sql.Bit, table.bStatus);
+
+      const result = await request.execute('DM_sp_TableMaster_Update');
+
+      await sql.close();
+      console.log('Disconnected from SQL Server');
+      return result;
+    } catch (error) {
+      console.error('Failed to execute stored procedure:', error);
+      throw new Error('Failed to execute stored procedure');
+    }
+  }
+
+
+
+  async DM_sp_RoleMaster_SelectAllActive(): Promise<any> {
+    try {
+      await sql.connect(this.sqlConnection);
+      console.log('Connected to SQL Server');
+
+      const request = new sql.Request();
+      const recordSet = await request.execute('DM_sp_RoleMaster_SelectAllActive');
 
       //   console.log('Executing proc...', recordSet);
       try {
@@ -166,13 +274,133 @@ export class MasterService {
       }
       console.log("recordSet", recordSet);
 
-      return recordSet;
+      return recordSet?.recordset;
     } catch (error) {
       console.error('Failed to connect to SQL Server:', error);
       throw new Error('Failed to connect to SQL Server');
     }
   }
 
+
+  async DM_sp_RoleMaster_Insert(table: RoleDto): Promise<any> {
+    console.log('Insert Table Data:', table);
+    try {
+      await sql.connect(this.sqlConnection);
+      console.log('Connected to SQL Server');
+
+      const request = new sql.Request();
+      // request.input('nRoleId', sql.Int, table.nRoleId);
+      request.input('vRoleName', sql.VarChar(50), table.vRoleName);
+      request.input('btActive', sql.Bit, table.btActive);
+      request.input('vAlias', sql.VarChar(50), table.vAlias);
+
+      const result = await request.execute('DM_sp_RoleMaster_Insert');
+
+      await sql.close();
+      console.log('Disconnected from SQL Server');
+      return result;
+    } catch (error) {
+      console.error('Failed to execute stored procedure:', error);
+      throw new Error('Failed to execute stored procedure');
+    }
+  }
+
+  async DM_sp_RoleMaster_Update(table: RoleDto): Promise<any> {
+    console.log('Update Table Data:', table);
+    try {
+      await sql.connect(this.sqlConnection);
+      console.log('Connected to SQL Server');
+
+      const request = new sql.Request();
+      request.input('nRoleId', sql.Int, table.nRoleId);
+      request.input('vRoleName', sql.VarChar(50), table.vRoleName);
+      request.input('btActive', sql.Bit, table.btActive);
+      request.input('vAlias', sql.VarChar(50), table.vAlias);
+
+      const result = await request.execute('DM_sp_RoleMaster_Update');
+
+      await sql.close();
+      console.log('Disconnected from SQL Server');
+      return result;
+    } catch (error) {
+      console.error('Failed to execute stored procedure:', error);
+      throw new Error('Failed to execute stored procedure');
+    }
+  }
+  
+
+
+
+
+  
+  async DM_sp_CategoryMaster_SelectAll_Active(): Promise<any> {
+    try {
+      await sql.connect(this.sqlConnection);
+      console.log('Connected to SQL Server');
+
+      const request = new sql.Request();
+      const recordSet = await request.execute('DM_sp_CategoryMaster_SelectAll_Active');
+
+      //   console.log('Executing proc...', recordSet);
+      try {
+        await this.pool.close();
+        console.log('Disconnected from SQL Server');
+      } catch (error) {
+        console.error('Failed to disconnect from SQL Server:', error);
+      }
+      console.log("recordSet", recordSet);
+
+      return recordSet?.recordset;
+    } catch (error) {
+      console.error('Failed to connect to SQL Server:', error);
+      throw new Error('Failed to connect to SQL Server');
+    }
+  }
+
+  async DM_sp_CategoryMaster_Insert(user: CategoryDto): Promise<any> {
+    console.log('Insert User Data:', user);
+    try {
+      await sql.connect(this.sqlConnection);
+      console.log('Connected to SQL Server');
+
+      const request = new sql.Request();
+      request.input('vCategoryName', sql.VarChar(50), user.vCategoryName);
+      request.input('vCatPrefix', sql.VarChar(50), user.vCatPrefix);
+      request.input('btActive', sql.Bit, user.btActive);
+
+      const result = await request.execute('DM_sp_CategoryMaster_Insert');
+
+      await sql.close();
+      console.log('Disconnected from SQL Server');
+      return result;
+    } catch (error) {
+      console.error('Failed to execute stored procedure:', error);
+      throw new Error('Failed to execute stored procedure');
+    }
+  }
+
+  async DM_sp_CategoryMaster_Update(user: CategoryDto): Promise<any> {
+    console.log('Update User Data:', user);
+    try {
+      await sql.connect(this.sqlConnection);
+      console.log('Connected to SQL Server');
+
+      const request = new sql.Request();
+      request.input('nCId', sql.Int, user.nCId);
+      request.input('vCategoryName', sql.VarChar(50), user.vCategoryName);
+      request.input('vCatPrefix', sql.VarChar(50), user.vCatPrefix);
+      request.input('btActive', sql.Bit, user.btActive);
+
+      const result = await request.execute('DM_sp_CategoryMaster_Update');
+
+      await sql.close();
+      console.log('Disconnected from SQL Server');
+      return result;
+    } catch (error) {
+      console.error('Failed to execute stored procedure:', error);
+      throw new Error('Failed to execute stored procedure');
+    }
+  }
 
 
 
