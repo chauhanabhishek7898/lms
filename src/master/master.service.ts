@@ -67,8 +67,8 @@ export class MasterService {
       //   console.error('Failed to disconnect from SQL Server:', error);
       // }
       // return { user, token };
-      console.log('recordSet', recordSet);
-      return recordSet;
+      console.log('recordSet', recordSet?.recordset);
+      return recordSet?.recordset;
     } catch (error) {
       console.error('Failed to connect to SQL Server:', error);
       throw new Error('Failed to connect to SQL Server');
