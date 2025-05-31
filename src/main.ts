@@ -12,12 +12,12 @@ async function bootstrap() {
   // Set API prefix (optional)
   app.setGlobalPrefix('api');
     await app.listen(process.env.PORT || 3000);
- app.use((req, res, next) => {
-    if (req.originalUrl.startsWith('/api')) {
-      return next();
-    }
-    res.sendFile(join(__dirname, '..','app', 'index.html'));
-  });
+//  app.use((req, res, next) => {
+//     if (req.originalUrl.startsWith('/api')) {
+//       return next();
+//     }
+//     res.sendFile(join(__dirname, '..','app', 'index.html'));
+//   });
 
   // Handle client-side routing (return index.html for unknown routes)
   // app.use((req, res) => {

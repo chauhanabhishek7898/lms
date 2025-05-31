@@ -6,12 +6,19 @@ import { join } from 'path';
 
 @Module({
   imports: [
+  //  ServeStaticModule.forRoot({
+  //     rootPath: join(__dirname, '..', 'app'),
+  //     exclude: ['/api*'],
+  //     serveStaticOptions: {
+  //       index: 'index.html'
+  //     }
+  //   }),
    ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'app'),
-      exclude: ['/api*'],
+      exclude: ['/api/{*test}'],
       serveStaticOptions: {
-        index: 'index.html'
-      }
+        fallthrough: false,
+      },
     }),
 //   ServeStaticModule.forRoot({
 //   rootPath: join(__dirname,  'api'),
