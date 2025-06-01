@@ -18,8 +18,8 @@ async function bootstrap() {
     .addTag('Travel')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
-
+  SwaggerModule.setup('swagger', app, document);
+  // app.setGlobalPrefix('api');
   await app.listen(process.env.PORT ?? 5000);
 }
 bootstrap();
